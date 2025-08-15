@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Friendly Bot - Instagram Style</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; margin: 0;
+  }
+
+  .chat-container {
+    width: 400px;
+    height: 700px;
+    background: #000;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 6px 30px rgba(0,0,0,0.55);
+    border: 3px solid transparent;
+    background-image:
+      linear-gradient(#000, #000),
+      linear-gradient(45deg, #f58529, #dd2a7b, #8134af, #515bd4);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    animation: igBorder 6s linear infinite;
+    display: flex; flex-direction: column;
+  }
+  @keyframes igBorder {
+    0% { background-image: linear-gradient(#000,#000), linear-gradient(45deg,#f58529,#dd2a7b,#8134af,#515bd4); }
+    50% { background-image: linear-gradient(#000,#000), linear-gradient(45deg,#515bd4,#8134af,#dd2a7b,#f58529); }
+    100% { background-image: linear-gradient(#000,#000), linear-gradient(45deg,#f58529,#dd2a7b,#8134af,#515bd4); }
+  }
+
+  .chat-header {
+    background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af, #515bd4);
+    padding: 14px 16px;
+    display: flex; align-items: center; gap: 10px;
+    color: #fff; font-size: 18px; font-weight: 700;
+  }
+  .chat-header img {
+    width: 42px; height: 42px; border-radius: 50%; border: 2px solid #fff;
+  }
+
+  .chat-messages {
+    flex: 1; padding: 14px; overflow-y: auto; background: #000;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+
+  .user-wrapper, .bot-wrapper {
+    display: flex; align-items: flex-end; gap: 10px; width: 100%;
+  }
+  .user-wrapper { justify-content: flex-end; }
+  .bot-wrapper  { justify-content: flex-start; }
+
+  .user-avatar, .bot-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    flex: 0 0 38px; object-fit: cover;
+  }
+
+  .message {
+    padding: 12px 15px;
+    border-radius: 18px;
+    max-width: 88%;
+    line-height: 1.45; font-size: 15px;
+    word-wrap: break-word;
+    animation: fadeInUp 0.25s ease;
+  }
+  .user-message {
+    background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af);
+    color: #fff;
+  }
+  .bot-message {
+    background: #000;
+    border: 2px solid transparent;
+    background-image:
+      linear-gradient(#000, #000),
+      linear-gradient(45deg, #f58529, #dd2a7b, #8134af, #515bd4);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    color: #fff;
+    animation: igBorder 6s linear infinite;
+  }
+
+  .chat-input {
+    display: flex; align-items: center;
+    padding: 10px; background: #111; border-top: 1px solid #333;
+  }
+  .chat-input input {
+    flex: 1; padding: 12px 14px; border: none; outline: none;
+    background: #222; color: #fff; border-radius: 22px;
+  }
+  .send-btn {
+    margin-left: 10px; width: 46px; height: 46px; border-radius: 50%;
+    border: none; color: #fff; font-size: 18px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af, #515bd4);
+  }
+
+  @keyframes fadeInUp { from {opacity:0; transform: translateY(8px);} to {opacity:1; transform: none;} }
+
+  .chat-messages::-webkit-scrollbar { width: 8px; }
+  .chat-messages::-webkit-scrollbar-thumb { background: #333; border-radius: 8px; }
+</style>
+</head>
+<body>
+
+<div class="chat-container">
+  <div class="chat-header">
+    <img src="https://i.postimg.cc/kGJ1MLzc/cute-3d-robot-waving-hand-cartoon-vector-icon-illustration-people-technology-isolated-flat-vector.png" alt="Bot">
+    Friendly Bot
+  </div>
+
+  <div id="chatMessages" class="chat-messages"></div>
+
+  <div class="chat-input">
+    <input type="text" id="userInput" placeholder="Type your message...">
+    <button class="send-btn" id="sendBtn">➤</button>
+  </div>
+</div>
+
+<script>
+  const USER_AVATAR = "https://i.postimg.cc/1RCWGmd0/307ce493-b254-4b2d-8ba4-d12c080d6651.jpg";
+  const BOT_AVATAR  = "https://i.postimg.cc/kGJ1MLzc/cute-3d-robot-waving-hand-cartoon-vector-icon-illustration-people-technology-isolated-flat-vector.png";
+
+  function sendMessage() {
+    const input = document.getElementById("userInput");
+    const text  = input.value.trim();
+    if (!text) return;
+
+    appendUserMessage(text);
+    input.value = "";
+
+    // This is just placeholder — replace with fetch() to your API later
+    setTimeout(() => {
+      appendBotMessage("Hey! I’m your Friendly Bot 💬");
+    }, 500);
+  }
+
+  function appendUserMessage(text) {
+    const wrap = document.createElement("div");
+    wrap.className = "user-wrapper";
+
+    const bubble = document.createElement("div");
+    bubble.className = "message user-message";
+    bubble.textContent = text;
+
+    const avatar = document.createElement("img");
+    avatar.className = "user-avatar";
+    avatar.src = USER_AVATAR;
+
+    wrap.appendChild(bubble);
+    wrap.appendChild(avatar);
+
+    const box = document.getElementById("chatMessages");
+    box.appendChild(wrap);
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function appendBotMessage(text) {
+    const wrap = document.createElement("div");
+    wrap.className = "bot-wrapper";
+
+    const avatar = document.createElement("img");
+    avatar.className = "bot-avatar";
+    avatar.src = BOT_AVATAR;
+
+    const bubble = document.createElement("div");
+    bubble.className = "message bot-message";
+    bubble.textContent = text;
+
+    wrap.appendChild(avatar);
+    wrap.appendChild(bubble);
+
+    const box = document.getElementById("chatMessages");
+    box.appendChild(wrap);
+    box.scrollTop = box.scrollHeight;
+  }
+
+  document.getElementById("userInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") { e.preventDefault(); sendMessage(); }
+  });
+  document.getElementById("sendBtn").addEventListener("click", sendMessage);
+</script>
+
+</body>
+</html>
